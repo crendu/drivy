@@ -165,19 +165,13 @@ var rentalModifications = [{
   'pickupDate': '2015-12-05'
 }];
 
-//date system
+//exercice 1
 function locationTime(d1, d2) {
 	var pickUpD = new Date(d1);
 	var returnD = new Date(d2);
-    var tmp = ((returnD - pickUpD) / (1000 * 60 * 60 * 24));
-	
-	if (tmp == 0) {
-		tmp = 1;
-	}
+    var tmp = ((returnD - pickUpD) / (1000 * 60 * 60 * 24)) + 1 ;
 	return tmp;
 }
-
-//exercice 1
 function price(i) {
 	var rental = rentals[i];
 	var car;
@@ -188,10 +182,12 @@ function price(i) {
 		}
 	}
 	rentals[i].price = (car.pricePerDay * locationTime(rental.pickupDate, rental.returnDate)) + (car.pricePerKm * rental.distance);
-	ReductionPrice(i, rental.pickupDate, rental.returnDate);
-	console.log("rental price after reduction= " + rentals[i].price );
+	console.log("rental price before reduction = " + rentals[i].price );
+	rentals[i].price = (car.pricePerDay * locationTime(rental.pickupDate, rental.returnDate) * reductionPrice(i, rental.pickupDate, rental.returnDate)) + (car.pricePerKm * rental.distance);
+	console.log("rental price after reduction = " + rentals[i].price );
+	commission(i, rental.pickupDate, rental.returnDate.drivy);
 }
-function rentalsPrice(){
+function rentalsPrice() {
 	for(var i = 0; i < rentals.length; ++i){
 		console.log("order " + i );
 		price(i);
@@ -199,13 +195,27 @@ function rentalsPrice(){
 }
 
 //exercice 2
-function ReductionPrice(i, d1, d2) {
-	var day = locationTime(d1, d2)	
+function reductionPrice(i, d1, d2) {
+	var day = locationTime(d1, d2)
+	var percent
 	
-	if ( day > 1 && day <= 4) { rentals[i].price = rentals[i].price - (rentals[i].price * 0.1) }
-	else if ( day > 4 && day < 10) { rentals[i].price = rentals[i].price - (rentals[i].price * 0.3) }
-	else if ( day > 10) { rentals[i].price = rentals[i].price - (rentals[i].price * 0.5) }
-	return rentals[i].price;
+	if ( day > 1 && day <= 4) { percent = 0.9;}
+	else if ( day > 4 && day < 10) { percent = 0.7; }
+	else if ( day > 10) { percent = 0.5; }
+	else { percent = 1; }
+	return percent;
+}
+
+//exercice 3
+function commission(i, d1, d2) {
+	var valuecomm = rentals[i].price * 0.3;
+	var comm = rentals[i].commission;
+	
+	comm.insurance = valuecomm *0.5;
+	comm.assistance = locationTime(d1, d2);
+	comm.drivy = valuecomm - comm.insurance - comm.assistance;
+	
+	return comm;
 }
 
 console.log(cars);
