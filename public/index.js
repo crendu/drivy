@@ -188,7 +188,23 @@ function rentalsPrice(){
 	for(var i = 0; i < rentals.length; ++i){
 		console.log("order " + i );
 		price(i);
+		ReductionPrice(i);
 	}
+}
+
+//exercice 2
+function ReductionPrice(i) {
+	var day = new Date();
+	var returnDate = new Date (rentals[i].returnDate);
+	var startDate = new Date(rentals[i].pickupDate);
+
+	day = 1+ (returnDate - startDate )/(24*3600*1000) ;		
+	
+	if ( day > 1 && day <= 4) { rentals[i].price = rentals[i].price - (rentals[i].price * 0.1) }
+	else if ( day > 4 && day < 10) { rentals[i].price = rentals[i].price - (rentals[i].price * 0.3) }
+	else if ( day > 10) { rentals[i].price = rentals[i].price - (rentals[i].price * 0.5) }
+	
+	console.log("rental price after deduction = " + rentals[i].price );
 }
 
 console.log(cars);
