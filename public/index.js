@@ -165,7 +165,34 @@ var rentalModifications = [{
   'pickupDate': '2015-12-05'
 }];
 
+//exercice 1
+function price(i) {
+	var rental = rentals[i];
+	var car;
+	var pickUpD = new Date(rental.pickupDate);
+	var returnD = new Date(rental.returnDate);
+    var tmp = ((returnD - pickUpD) / (1000 * 60 * 60 * 24));
+	
+	if (tmp == 0) {
+		tmp = 1;
+	}
+	for(var j =0; j  < cars.length; ++j) {
+		if(cars[j].id == rental.carId){
+			car = cars[j];
+		}
+	}
+	rentals[i].price = (car.pricePerDay * tmp) + (car.pricePerKm * rental.distance);
+	console.log("rental price = " + rentals[i].price );
+}
+function rentalsPrice(){
+	for(var i = 0; i < rentals.length; ++i){
+		console.log("order " + i );
+		price(i);
+	}
+}
+
 console.log(cars);
 console.log(rentals);
 console.log(actors);
 console.log(rentalModifications);
+rentalsPrice();
