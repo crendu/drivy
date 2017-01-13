@@ -165,46 +165,47 @@ var rentalModifications = [{
   'pickupDate': '2015-12-05'
 }];
 
-//exercice 1
-function price(i) {
-	var rental = rentals[i];
-	var car;
-	var pickUpD = new Date(rental.pickupDate);
-	var returnD = new Date(rental.returnDate);
+//date system
+function locationTime(d1, d2) {
+	var pickUpD = new Date(d1);
+	var returnD = new Date(d2);
     var tmp = ((returnD - pickUpD) / (1000 * 60 * 60 * 24));
 	
 	if (tmp == 0) {
 		tmp = 1;
 	}
+	return tmp;
+}
+
+//exercice 1
+function price(i) {
+	var rental = rentals[i];
+	var car;
+	
 	for(var j =0; j  < cars.length; ++j) {
 		if(cars[j].id == rental.carId){
 			car = cars[j];
 		}
 	}
-	rentals[i].price = (car.pricePerDay * tmp) + (car.pricePerKm * rental.distance);
-	console.log("rental price = " + rentals[i].price );
+	rentals[i].price = (car.pricePerDay * locationTime(rental.pickupDate, rental.returnDate)) + (car.pricePerKm * rental.distance);
+	ReductionPrice(i, rental.pickupDate, rental.returnDate);
+	console.log("rental price after reduction= " + rentals[i].price );
 }
 function rentalsPrice(){
 	for(var i = 0; i < rentals.length; ++i){
 		console.log("order " + i );
 		price(i);
-		ReductionPrice(i);
 	}
 }
 
 //exercice 2
-function ReductionPrice(i) {
-	var day = new Date();
-	var returnDate = new Date (rentals[i].returnDate);
-	var startDate = new Date(rentals[i].pickupDate);
-
-	day = 1+ (returnDate - startDate )/(24*3600*1000) ;		
+function ReductionPrice(i, d1, d2) {
+	var day = locationTime(d1, d2)	
 	
 	if ( day > 1 && day <= 4) { rentals[i].price = rentals[i].price - (rentals[i].price * 0.1) }
 	else if ( day > 4 && day < 10) { rentals[i].price = rentals[i].price - (rentals[i].price * 0.3) }
 	else if ( day > 10) { rentals[i].price = rentals[i].price - (rentals[i].price * 0.5) }
-	
-	console.log("rental price after deduction = " + rentals[i].price );
+	return rentals[i].price;
 }
 
 console.log(cars);
